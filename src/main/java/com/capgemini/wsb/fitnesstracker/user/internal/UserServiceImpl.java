@@ -1,14 +1,18 @@
 package com.capgemini.wsb.fitnesstracker.user.internal;
 
 import com.capgemini.wsb.fitnesstracker.user.api.User;
+import com.capgemini.wsb.fitnesstracker.user.api.UserNotFoundException;
 import com.capgemini.wsb.fitnesstracker.user.api.UserProvider;
 import com.capgemini.wsb.fitnesstracker.user.api.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +37,7 @@ class UserServiceImpl implements UserService, UserProvider {
 
     @Override
     public Optional<User> getUserByEmail(final String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmailIgnoreCase(email);
     }
 
     @Override
@@ -41,4 +45,34 @@ class UserServiceImpl implements UserService, UserProvider {
         return userRepository.findAll();
     }
 
+    @Override
+    public User updateUser(UserDto user, Long userId) {
+        Optional<User> userById = userRepository.findById(userId);
+        if (userById.isPresent()) {
+            User user1 = userById.get();
+            user1.setFirstName(user.firstName());
+            user1.setLastName(user.lastName());
+            user1.setEmail(user.email());
+            user1.setBirthdate(user.birthdate());
+            return userRepository.save(user1);
+        }
+        else {
+            throw new UserNotFoundException(userId);
+        }
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<User> searchUsersByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<User> searchUsersByAge(LocalDate date) {
+        return userRepository.findByBirthdateBefore(date);
+    }
 }

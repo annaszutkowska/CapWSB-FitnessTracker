@@ -30,6 +30,14 @@ class UserApiIntegrationTest extends IntegrationTestBase {
     @Autowired
     private MockMvc mockMvc;
 
+    public static User generateUser() {
+        return new User(randomUUID().toString(), randomUUID().toString(), LocalDate.now(), randomUUID().toString());
+    }
+
+    private static User generateUserWithDate(LocalDate date) {
+        return new User(randomUUID().toString(), randomUUID().toString(), date, randomUUID().toString());
+    }
+
     @Test
     void shouldReturnAllUsers_whenGettingAllUsers() throws Exception {
         User user1 = existingUser(generateUser());
@@ -201,14 +209,6 @@ class UserApiIntegrationTest extends IntegrationTestBase {
         assertThat(user.getLastName()).isEqualTo(USER_LAST_NAME);
         assertThat(user.getBirthdate()).isEqualTo(LocalDate.parse(USER_BIRTHDATE));
         assertThat(user.getEmail()).isEqualTo(USER_EMAIL);
-    }
-
-    public static User generateUser() {
-        return new User(randomUUID().toString(), randomUUID().toString(), LocalDate.now(), randomUUID().toString());
-    }
-
-    private static User generateUserWithDate(LocalDate date) {
-        return new User(randomUUID().toString(), randomUUID().toString(), date, randomUUID().toString());
     }
 
 

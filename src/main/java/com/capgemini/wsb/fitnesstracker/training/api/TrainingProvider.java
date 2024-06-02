@@ -1,7 +1,10 @@
 package com.capgemini.wsb.fitnesstracker.training.api;
 
+import com.capgemini.wsb.fitnesstracker.training.internal.ActivityType;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface TrainingProvider {
@@ -15,4 +18,17 @@ public interface TrainingProvider {
      */
     Optional<User> getTraining(Long trainingId);
 
+    void deleteByUserId(Long userId);
+
+    List<Training> getAllTrainings();
+
+    List<Training> getAllTrainingsForDedicatedUser(Long userId);
+
+    List<Training> getAllFinishedTrainingsAfter(LocalDateTime afterDateTime);
+
+    List<Training> getAllTrainingByActivityType(ActivityType activityType);
+
+    Training createTraining(TrainingDTO trainingDTO);
+
+    Training updateTraining(TrainingDTO trainingDTO, Long trainingId);
 }
